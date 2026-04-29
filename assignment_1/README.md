@@ -28,6 +28,7 @@ assignment_1/
       personas.py
     .env.example
     requirements.txt
+    runtime.txt
     render.yaml
     Procfile
   frontend/
@@ -97,6 +98,7 @@ Create a Render Web Service.
 - Root directory: `backend`
 - Build command: `pip install -r requirements.txt`
 - Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- Runtime: pinned in `backend/runtime.txt` as Python 3.12.8
 
 Environment variables:
 
