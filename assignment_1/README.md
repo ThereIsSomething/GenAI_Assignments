@@ -27,6 +27,7 @@ assignment_1/
       main.py
       personas.py
     .env.example
+    .python-version
     requirements.txt
     runtime.txt
     render.yaml
@@ -98,11 +99,12 @@ Create a Render Web Service.
 - Root directory: `backend`
 - Build command: `pip install -r requirements.txt`
 - Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-- Runtime: pinned in `backend/runtime.txt` as Python 3.12.8
+- Runtime: set `PYTHON_VERSION=3.12.8` in Render. The repo also includes `backend/.python-version`.
 
 Environment variables:
 
 ```env
+PYTHON_VERSION=3.12.8
 GEMINI_API_KEY=your_real_gemini_key
 GEMINI_MODEL=gemini-2.5-flash
 FRONTEND_ORIGIN=https://your-vercel-app.vercel.app
