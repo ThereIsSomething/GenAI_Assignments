@@ -1,0 +1,11 @@
+# Reflection
+
+This assignment made the GIGO principle feel very practical. A weak prompt like "act like a helpful founder" would probably produce polite but forgettable answers. The useful behavior came only after feeding the model specific context: what each person is publicly known for, what values they seem to emphasize, what tone fits them, and what they should avoid saying. The input had to be structured before the output could be trusted.
+
+The most important design choice was separating the three personas into three different system prompts instead of trying to handle personality only from the frontend. The React persona switch is just the visible part; the real behavior comes from the FastAPI backend passing a different system instruction to Gemini for every conversation. I also reset the chat when the persona changes, because old conversation history would pollute the next persona and weaken the assignment's core idea.
+
+What worked well was using few-shot examples. They gave the model a pattern to follow: short answers, concrete advice, and a closing question. The examples also made the personas less generic. Anshuman's prompt leans toward skills, proof of work, consistency, and mentorship. Abhimanyu's prompt leans toward structured execution, role-based learning, and career relevance. Kshitij's prompt leans toward patient teaching, fundamentals, systems thinking, and small exercises.
+
+The biggest challenge was representing real people fairly. It is easy to overdo a persona and accidentally put words in someone's mouth. To avoid that, the prompts explicitly say the bot is a simulation based on public information, and they prevent the model from inventing private stories, exact quotes, or confidential opinions. That constraint makes the chatbot more honest while still keeping the personality useful.
+
+If I improved this further, I would add saved conversations, a small evaluation sheet for comparing persona quality, and maybe a feedback button where users can mark whether the answer felt authentic. I would also test more questions from actual Scaler classroom contexts and tune the prompts based on repeated failures instead of judging them from only a few examples.
