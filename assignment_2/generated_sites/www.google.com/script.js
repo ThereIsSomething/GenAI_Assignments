@@ -1,0 +1,1 @@
+document.querySelector('.search-bar').addEventListener('keypress', function(e) { if (e.key === 'Enter') { console.log('Searching for: ' + this.value); } });
