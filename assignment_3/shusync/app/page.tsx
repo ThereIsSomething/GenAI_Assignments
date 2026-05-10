@@ -10,7 +10,7 @@ type Message = { role: 'user' | 'assistant'; content: string };
 type PipelineStep = { label: string; status: 'idle' | 'active' | 'done' };
 
 const PIPELINE_STEPS: PipelineStep[] = [
-  { label: 'Parse PDF', status: 'idle' },
+  { label: 'Parse Document', status: 'idle' },
   { label: 'Chunk Text', status: 'idle' },
   { label: 'Embed Vectors', status: 'idle' },
   { label: 'Index to DB', status: 'idle' },
