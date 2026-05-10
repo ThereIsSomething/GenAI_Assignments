@@ -156,7 +156,12 @@ export default function Home() {
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: { 'application/pdf': ['.pdf'] },
+    accept: {
+      'application/pdf': ['.pdf'],
+      'text/plain': ['.txt'],
+      'text/csv': ['.csv'],
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+    },
     maxFiles: 1,
     onDrop: (files) => files[0] && handleUpload(files[0]),
   });
@@ -325,10 +330,10 @@ export default function Home() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-[var(--text-primary)]">
-                    {uploadStatus === 'uploading' ? 'Processing document...' : 'Drop a PDF here or click to browse'}
+                    {uploadStatus === 'uploading' ? 'Processing document...' : 'Drop a file here or click to browse'}
                   </p>
                   <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
-                    {uploadStatus === 'uploading' ? 'Parsing → Chunking → Embedding → Indexing' : 'Upload a document to start a conversation'}
+                    {uploadStatus === 'uploading' ? 'Parsing → Chunking → Embedding → Indexing' : 'Supports .pdf, .docx, .txt, .csv'}
                   </p>
                 </div>
                 {uploadStatus !== 'uploading' && (
