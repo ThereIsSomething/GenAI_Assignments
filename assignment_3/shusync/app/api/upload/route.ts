@@ -4,6 +4,8 @@ import { PineconeStore } from '@langchain/pinecone';
 import { OpenAIEmbeddings } from '@langchain/openai';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { Document } from 'langchain/document';
+import mammoth from 'mammoth';
 
 export async function POST(req: Request) {
   try {
@@ -14,21 +16,31 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // Convert File to Blob for PDFLoader
-    const blob = new Blob([await file.arrayBuffer()], { type: file.type });
-    
-    // Load and parse PDF
-    const loader = new PDFLoader(blob);
-    const docs = await loader.load();
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+    const buffer = await file.arrayBuffer();
+    let rawText = '';
 
-    // Add metadata
-    const docsWithMetadata = docs.map(doc => {
-      doc.metadata = {
-        ...doc.metadata,
-        source: file.name,
-      };
-      return doc;
-    });
+    // Parse based on file type
+    if (ext === 'pdf') {
+      const blob = new Blob([buffer], { type: file.type });
+      const loader = new PDFLoader(blob);
+      const pdfDocs = await loader.load();
+      rawText = pdfDocs.map(d => d.pageContent).join('\n\n');
+    } else if (ext === 'txt' || ext === 'csv') {
+      rawText = new TextDecoder('utf-8').decode(buffer);
+    } else if (ext === 'docx') {
+      const result = await mammoth.extractRawText({ buffer: Buffer.from(buffer) });
+      rawText = result.value;
+    } else {
+      return NextResponse.json({ error: `Unsupported file type: .${ext}` }, { status: 400 });
+    }
+
+    if (!rawText.trim()) {
+      return NextResponse.json({ error: 'Could not extract text from file' }, { status: 400 });
+    }
+
+    // Wrap in LangChain Document
+    const docs = [new Document({ pageContent: rawText, metadata: { source: file.name } })];
 
     // Chunking
     const splitter = new RecursiveCharacterTextSplitter({
@@ -36,7 +48,7 @@ export async function POST(req: Request) {
       chunkOverlap: 200,
     });
     
-    const splitDocs = await splitter.splitDocuments(docsWithMetadata);
+    const splitDocs = await splitter.splitDocuments(docs);
 
     // Custom Nvidia NIM Embeddings to support input_type
     const embeddings = {
