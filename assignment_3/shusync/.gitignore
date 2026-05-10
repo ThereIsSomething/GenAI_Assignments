@@ -32,3 +32,5 @@ Thumbs.db
 
 # Misc
 *.tsbuildinfo
+build_output.txt
+test-*.mjs
